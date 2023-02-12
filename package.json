@@ -1,9 +1,10 @@
 {
-  "name": "Ola",
+  "name": "viem-bloom-filter",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "ts-node index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -16,6 +17,7 @@
   },
   "devDependencies": {
     "@types/node": "17.0.33",
-    "typescript": "4.9.4"
+    "typescript": "4.9.4",
+    "dotenv": "16.0.3"
   }
 }

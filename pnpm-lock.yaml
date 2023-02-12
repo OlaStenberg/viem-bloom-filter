@@ -1,19 +1,21 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@types/node': ^17.0.33
-  ethereum-bloom-filters: ^1.0.10
-  ts-node: ^10.9.1
+  '@types/node': 17.0.33
+  dotenv: 16.0.3
+  ethereum-bloom-filters: 1.0.10
+  ts-node: 10.9.1
   typescript: 4.9.4
   viem: 0.0.1-alpha.24
 
 dependencies:
   ethereum-bloom-filters: 1.0.10
-  ts-node: 10.9.1_zpb5kzpnyozdjq4cwaojlul57u
+  ts-node: 10.9.1_qxexwkazc4ep6gdxrdxr7ceo34
   viem: 0.0.1-alpha.24_typescript@4.9.4
 
 devDependencies:
-  '@types/node': 17.0.45
+  '@types/node': 17.0.33
+  dotenv: 16.0.3
   typescript: 4.9.4
 
 packages:
@@ -61,8 +63,8 @@ packages:
     resolution: {integrity: sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ==}
     dev: false
 
-  /@types/node/17.0.45:
-    resolution: {integrity: sha512-w+tIMs3rq2afQdsPJlODhoUEKzFP1ayaoyl1CcnwtIlsVe7K7bA1NGm4s3PraqTLlXnbIN84zuBlxBWo1u9BLw==}
+  /@types/node/17.0.33:
+    resolution: {integrity: sha512-miWq2m2FiQZmaHfdZNcbpp9PuXg34W5JZ5CrJ/BaS70VuhoJENBEQybeiYSaPBRNq6KQGnjfEnc/F3PN++D+XQ==}
 
   /@wagmi/chains/0.2.8_typescript@4.9.4:
     resolution: {integrity: sha512-owGdAL75bE0JOzVTm5SOci458RrdD+FTJ6D238A+0VV9SQCz5N8vK9VBxhcEKXexjhzMM+CJZqFBTyxNsmNlLw==}
@@ -112,6 +114,11 @@ packages:
     engines: {node: '>=0.3.1'}
     dev: false
 
+  /dotenv/16.0.3:
+    resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
+    engines: {node: '>=12'}
+    dev: true
+
   /ethereum-bloom-filters/1.0.10:
     resolution: {integrity: sha512-rxJ5OFN3RwjQxDcFP2Z5+Q9ho4eIdEmSc2ht0fCu8Se9nbXjZ7/031uXoUYJ87KHCOdVeiUuwSnoS7hmYAGVHA==}
     dependencies:
@@ -138,7 +145,7 @@ packages:
     engines: {node: '>=6'}
     dev: false
 
-  /ts-node/10.9.1_zpb5kzpnyozdjq4cwaojlul57u:
+  /ts-node/10.9.1_qxexwkazc4ep6gdxrdxr7ceo34:
     resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
     hasBin: true
     peerDependencies:
@@ -157,7 +164,7 @@ packages:
       '@tsconfig/node12': 1.0.11
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.3
-      '@types/node': 17.0.45
+      '@types/node': 17.0.33
       acorn: 8.8.2
       acorn-walk: 8.2.0
       arg: 4.1.3

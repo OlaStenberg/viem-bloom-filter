@@ -109,22 +109,29 @@ export const PAIRS = [
     '0x7ba331a8b360f4c31e6014abdd6852f92fb21557',
 ]
 
-export declare const getReservesAbi: readonly [{
-    readonly inputs: readonly [];
-    readonly name: "getReserves";
-    readonly outputs: readonly [{
-        readonly internalType: "uint112";
-        readonly name: "_reserve0";
-        readonly type: "uint112";
-    }, {
-        readonly internalType: "uint112";
-        readonly name: "_reserve1";
-        readonly type: "uint112";
-    }, {
-        readonly internalType: "uint32";
-        readonly name: "_blockTimestampLast";
-        readonly type: "uint32";
-    }];
-    readonly stateMutability: "view";
-    readonly type: "function";
-}];
+export const getReservesAbi = [
+    {
+      inputs: [],
+      name: 'getReserves',
+      outputs: [
+        {
+          internalType: 'uint112',
+          name: '_reserve0',
+          type: 'uint112',
+        },
+        {
+          internalType: 'uint112',
+          name: '_reserve1',
+          type: 'uint112',
+        },
+        {
+          internalType: 'uint32',
+          name: '_blockTimestampLast',
+          type: 'uint32',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+  ] as const
+  
