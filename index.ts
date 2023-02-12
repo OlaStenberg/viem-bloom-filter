@@ -1,8 +1,9 @@
 import 'dotenv/config'
 import { isContractAddressInBloom, isTopicInBloom } from "ethereum-bloom-filters"
-import { Address, createClient, http, multicall, watchBlocks } from "viem"
+import { Address, createClient, getBlockNumber, http, multicall, watchBlocks } from "viem"
 import { polygon } from 'viem/chains'
 import { getReservesAbi, PAIRS as PAIR_ADDRESSES, TOPIC } from "./config"
+import { performance } from 'perf_hooks'
 
 const ALCHEMY_ID = process.env['ALCHEMY_ID']
 
@@ -12,7 +13,7 @@ let blocksProcessed = 0
 let neededRpcsCalls = 0
 let unnecessaryRpcCalls = 0
 
-const PAIRS = new Map(PAIR_ADDRESSES.map(address => [address, { address, reserve0: BigInt(0), reserve1: BigInt(0) }]));
+const PAIRS = new Map(PAIR_ADDRESSES.map(address => [address, { address, reserve0: BigInt(0), reserve1: BigInt(0), updatedAtBlock: BigInt(0) }]));
 
 const client = createClient({
     chain: polygon,
@@ -21,6 +22,7 @@ const client = createClient({
 
 
 async function main() {
+    const blockNumber = await getBlockNumber(client)
     const reserves = await multicall(client, {
         multicallAddress: '0xcA11bde05977b3631167028862bE2a173976CA11' as Address,
         allowFailure: true,
@@ -41,6 +43,7 @@ async function main() {
         if (res0 && res1) {
             pair.reserve0 = res0
             pair.reserve1 = res1
+            pair.updatedAtBlock = blockNumber
         }
     }
     )
@@ -82,7 +85,7 @@ async function processBloom(blockNumber: bigint | null, bloom: string, hash: str
         console.log(`${blockNumber}~${hash} - TN: Pairs are not in bloom.`)
         return
     }
-
+    const startTime = performance.now()
     const reserves = await multicall(client, {
         multicallAddress: '0xcA11bde05977b3631167028862bE2a173976CA11' as Address,
         allowFailure: true,
@@ -96,6 +99,8 @@ async function processBloom(blockNumber: bigint | null, bloom: string, hash: str
             } as const)
         ),
     })
+    const endTime = performance.now()
+    const duration = ((endTime - startTime) / 1000).toFixed(1)
 
     let updated = 0
 
@@ -106,17 +111,22 @@ async function processBloom(blockNumber: bigint | null, bloom: string, hash: str
 
         if (!res0 || !res1) return
         if (pair.reserve0 === res0 && pair.reserve1 === res1) return
+        if (pair.updatedAtBlock > blockNumber) {
+            console.debug(`Tried to update reserves for pair ${pair.address} at block ${blockNumber} but it was already updated at block ${pair.updatedAtBlock} (${duration}s). `)
+            return
+        }
 
         pair.reserve0 = res0
         pair.reserve1 = res1
+        pair.updatedAtBlock = blockNumber
         updated++
     })
     if (updated === 0) {
-        console.log(`${blockNumber}~${hash} - FP: Unnecessary call, ${pairsToUpdate.length} pairs.`)
+        console.log(`${blockNumber}~${hash} - FP: Unnecessary call, ${pairsToUpdate.length} pairs (${duration}s).`)
         unnecessaryRpcCalls++
     }
     else {
-        console.log(`${blockNumber}~${hash} - TP: Updated reserves for ${updated} pairs (${pairsToUpdate.length - updated} was unnecessary). `)
+        console.log(`${blockNumber}~${hash} - TP: Updated reserves for ${updated} pairs, ${pairsToUpdate.length - updated} was unnecessary (${duration}s). `)
         neededRpcsCalls++
     }
 }
