@@ -1,9 +1,11 @@
 import 'dotenv/config'
 import { isContractAddressInBloom, isTopicInBloom } from "ethereum-bloom-filters"
-import { Address, createClient, getBlockNumber, http, multicall, watchBlocks } from "viem"
+import { Address, createClient, fallback, http  } from "viem"
 import { polygon } from 'viem/chains'
 import { getReservesAbi, PAIRS as PAIR_ADDRESSES, TOPIC } from "./config"
 import { performance } from 'perf_hooks'
+import { getBlockNumber, watchBlocks } from 'viem/public'
+import { multicall } from 'viem/contract'
 
 const ALCHEMY_ID = process.env['ALCHEMY_ID']
 
@@ -17,9 +19,11 @@ const PAIRS = new Map(PAIR_ADDRESSES.map(address => [address, { address, reserve
 
 const client = createClient({
     chain: polygon,
-    transport: http(polygon.rpcUrls.alchemy.http + '/' + ALCHEMY_ID),
-})
-
+    transport: fallback([
+      http(`${polygon.rpcUrls.alchemy.http}/${ALCHEMY_ID}`),
+      http(polygon.rpcUrls.default.http[0]),
+    ]),
+  })
 
 async function main() {
     const blockNumber = await getBlockNumber(client)
@@ -33,7 +37,8 @@ async function main() {
                 chainId: 137,
                 abi: getReservesAbi,
                 functionName: 'getReserves',
-            } as const)
+            } as const),
+            blockNumber
         ),
     })
     Array.from(PAIRS.values()).forEach((pair, i) => {
@@ -96,6 +101,7 @@ async function processBloom(blockNumber: bigint | null, bloom: string, hash: str
                 chainId: 137,
                 abi: getReservesAbi,
                 functionName: 'getReserves',
+                blockNumber
             } as const)
         ),
     })
