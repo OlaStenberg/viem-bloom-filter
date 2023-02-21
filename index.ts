@@ -14,15 +14,17 @@ if (!ALCHEMY_ID) throw new Error('ALCHEMY_ID undefined')
 let blocksProcessed = 0
 let neededRpcsCalls = 0
 let unnecessaryRpcCalls = 0
+const CHAIN_ID = 137
 
 const PAIRS = new Map(PAIR_ADDRESSES.map(address => [address, { address, reserve0: BigInt(0), reserve1: BigInt(0), updatedAtBlock: BigInt(0) }]));
 
 const client = createClient({
     chain: polygon,
-    transport: fallback([
+    transport: 
+    // fallback([
       http(`${polygon.rpcUrls.alchemy.http}/${ALCHEMY_ID}`),
-      http(polygon.rpcUrls.default.http[0]),
-    ]),
+    //   http(polygon.rpcUrls.default.http[0]),
+    // ]),
   })
 
 async function main() {
@@ -34,7 +36,7 @@ async function main() {
             (pair) =>
             ({
                 address: pair.address as Address,
-                chainId: 137,
+                chainId: CHAIN_ID,
                 abi: getReservesAbi,
                 functionName: 'getReserves',
             } as const),
@@ -98,7 +100,7 @@ async function processBloom(blockNumber: bigint | null, bloom: string, hash: str
             (pair) =>
             ({
                 address: pair.address as Address,
-                chainId: 137,
+                chainId: CHAIN_ID,
                 abi: getReservesAbi,
                 functionName: 'getReserves',
                 blockNumber
